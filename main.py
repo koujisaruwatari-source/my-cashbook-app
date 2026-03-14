@@ -92,3 +92,18 @@ with st.form("input_form", clear_on_submit=True):
 st.header("📊 入出金履歴")
 # 最新のデータを表示
 st.dataframe(data_df.sort_index(ascending=False), use_container_width=True)
+import streamlit as st
+from streamlit_gsheets import GSheetsConnection
+
+# Secretsの確認用
+if "public_gsheets_url" not in st.secrets:
+    st.error("Secretsに 'public_gsheets_url' が見つかりません！")
+else:
+    url = st.secrets["public_gsheets_url"]
+    conn = st.connection("gsheets", type=GSheetsConnection)
+    
+    # シート名を指定せずに一番左のシートを読み込む
+    df = conn.read(spreadsheet=url)
+    st.write("接続に成功しました！一番左のシートを表示します：")
+    st.dataframe(df)
+    
