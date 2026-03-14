@@ -12,10 +12,12 @@ conn = st.connection("gsheets", type=GSheetsConnection)
 # --- 1. データの読み込み ---
 try:
     url = st.secrets["public_gsheets_url"]
-    # スプレッドシートからマスタと履歴を読み込む
-    master_df = conn.read(spreadsheet=url, worksheet="master")
-    data_df = conn.read(spreadsheet=url, worksheet="transactions")
-    st.sidebar.success("データ同期中")
+    # worksheetの指定を外して、とにかくスプレッドシートを読み込む
+    df = conn.read(spreadsheet=url)
+    st.success("接続成功！一番左のシートを表示します。")
+    st.dataframe(df.head())
+    st.stop() # ここで一旦止めて、表示されるか確認
+   
 except Exception as e:
     st.error(f"データの読み込みに失敗しました。シート名(master/transactions)を確認してください。: {e}")
     st.stop()
