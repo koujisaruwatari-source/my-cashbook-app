@@ -10,10 +10,15 @@ url = st.secrets["public_gsheets_url"]
 
 # --- 1. データの読み込み ---
 try:
-    # 1枚目のマスタを読み込む
-    master_df = conn.read(spreadsheet=url, worksheet="master", ttl=0)
-    # 2枚目の履歴を読み込む
-    data_df = conn.read(spreadsheet=url, worksheet="transactions", ttl=0)
+    url = st.secrets["public_gsheets_url"]
+    
+    # 【変更点】worksheetの指定を「変数」にして、前後の空白を削除する処理を追加
+    master_name = "master".strip()
+    trans_name = "transactions".strip()
+
+    master_df = conn.read(spreadsheet=url, worksheet=master_name, ttl=0)
+    data_df = conn.read(spreadsheet=url, worksheet=trans_name, ttl=0)
+    
     st.sidebar.success("✅ データ同期中")
 except Exception as e:
     st.error(f"シートの読み込みでエラーが発生しました。タブ名が 'master' と 'transactions' になっているか確認してください。: {e}")
@@ -52,10 +57,16 @@ with st.form("input_form", clear_on_submit=True):
         
         # 保存実行
         try:
-            conn.update(spreadsheet=url, worksheet="transactions", data=updated_df)
-            st.success("スプレッドシートへの保存に成功しました！")
-            st.balloons()
-            st.rerun()
+    url = st.secrets["public_gsheets_url"]
+    
+    # 【変更点】worksheetの指定を「変数」にして、前後の空白を削除する処理を追加
+    master_name = "master".strip()
+    trans_name = "transactions".strip()
+
+    master_df = conn.read(spreadsheet=url, worksheet=master_name, ttl=0)
+    data_df = conn.read(spreadsheet=url, worksheet=trans_name, ttl=0)
+    
+    st.sidebar.success("✅ データ同期中")
         except Exception as e:
             st.error(f"保存に失敗しました。共有設定が『編集者』になっているか確認してください。: {e}")
 
