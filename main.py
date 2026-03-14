@@ -10,14 +10,15 @@ st.title("📖 現金出納帳クラウド")
 conn = st.connection("gsheets", type=GSheetsConnection)
 url = st.secrets["public_gsheets_url"]
 
-# --- 1. データの読み込み ---
+# --- 1. データの読み込み（シート名を使わない方法） ---
 try:
-    # シート名を指定して読み込み
-    master_df = conn.read(spreadsheet=url, worksheet="master")
+    url = st.secrets["public_gsheets_url"]
+    # 1番目のシート(マスタ)を読み込む
+    master_df = conn.read(spreadsheet=url, ttl=0) 
+    # 2番目のシート(履歴)を読み込む（本来は名前指定が必要ですが、一旦これでテスト）
     data_df = conn.read(spreadsheet=url, worksheet="transactions")
 except Exception as e:
-    st.error("データの読み込みに失敗しました。")
-    st.info("スプレッドシートのタブ名が 'master' と 'transactions' になっているか確認してください。")
+    st.error(f"まだエラーが出ます: {e}")
     st.stop()
 
 # --- 2. 入力フォーム ---
