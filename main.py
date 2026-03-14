@@ -94,3 +94,24 @@ st.divider()
 st.header("📊 入出金履歴（最新10件）")
 # 逆順にして新しいデータを上に表示
 st.dataframe(data_df.sort_index(ascending=False).head(10), use_container_width=True)
+import streamlit as st
+from streamlit_gsheets import GSheetsConnection
+
+st.title("🔍 シート名確認モード")
+
+url = st.secrets["public_gsheets_url"]
+conn = st.connection("gsheets", type=GSheetsConnection)
+
+try:
+    # シート全体を読み込んでみる
+    df = conn.read(spreadsheet=url)
+    st.success("接続自体は成功しています！")
+    
+    st.write("読み込まれたデータのプレビュー（最初のシート）:")
+    st.dataframe(df.head())
+    
+    st.info("【ヒント】もし上の表がマスタなら、プログラムの worksheet='master' を worksheet='シート1' など、現在表示されているシートの正式名に直す必要があります。")
+
+except Exception as e:
+    st.error(f"エラーが発生しました: {e}")
+    
