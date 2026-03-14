@@ -74,3 +74,26 @@ st.divider()
 st.header("📊 入出金履歴")
 # 履歴を新しい順に表示
 st.dataframe(data_df.sort_index(ascending=False), use_container_width=True)
+import streamlit as st
+from streamlit_gsheets import GSheetsConnection
+
+st.title("🔍 スプレッドシート診断")
+
+url = st.secrets["public_gsheets_url"]
+conn = st.connection("gsheets", type=GSheetsConnection)
+
+try:
+    # シート名を指定せずに、まず接続できるか確認
+    df = conn.read(spreadsheet=url)
+    st.success("スプレッドシート本体への接続は成功しました！")
+    
+    # 実際のスプレッドシートにあるタブ名（シート名）を表示させたいですが、
+    # 簡易的に最初の5行を表示して構造を確認します
+    st.write("現在読み込めているデータ（一番左のシート）:")
+    st.dataframe(df.head())
+    
+    st.info("この表が『マスタ』の内容なら、プログラムの worksheet='master' を worksheet='(このシートの名前)' に書き換えてください。")
+
+except Exception as e:
+    st.error(f"接続そのものに失敗しています: {e}")
+    st.warning("スプレッドシートの共有設定を『リンクを知っている全員』＋『編集者』にしているか再確認してください。")
