@@ -106,4 +106,24 @@ else:
     df = conn.read(spreadsheet=url)
     st.write("接続に成功しました！一番左のシートを表示します：")
     st.dataframe(df)
+  import streamlit as st
+from streamlit_gsheets import GSheetsConnection
+
+st.title("🔍 接続テスト用")
+
+if "public_gsheets_url" not in st.secrets:
+    st.error("Secretsに 'public_gsheets_url' が設定されていません。")
+else:
+    url = st.secrets["public_gsheets_url"]
+    conn = st.connection("gsheets", type=GSheetsConnection)
     
+    try:
+        # 最もシンプルな読み込み（シート名指定なし）
+        # これで失敗する場合はURL自体が間違っています
+        df = conn.read(spreadsheet=url)
+        st.success("接続成功！シートが見つかりました。")
+        st.write("読み込んだデータ（一番左のシート）:")
+        st.dataframe(df)
+    except Exception as e:
+        st.error(f"詳細エラー: {e}")
+        st.info("【確認】URLが https://docs.google.com/spreadsheets/d/ID/edit の形式か確認してください。")  
