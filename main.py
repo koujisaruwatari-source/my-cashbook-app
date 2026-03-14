@@ -38,13 +38,16 @@ url = st.secrets["public_gsheets_url"]
 
 # --- 1. データの読み込み ---
 try:
-    # シート名は実際のものに合わせてください（ここでは master / transactions と仮定）
-    master_df = conn.read(spreadsheet=url, worksheet="master")
-    data_df = conn.read(spreadsheet=url, worksheet="transactions")
-    st.sidebar.success("データ同期中")
-except Exception as e:
-    st.error(f"シートの読み込みに失敗しました。シート名を確認してください。: {e}")
-    st.stop()
+    # URLを取得
+    url = st.secrets["public_gsheets_url"]
+    
+    # シート名指定を「変数」にして分かりやすくする
+    MASTER_SHEET = "master"        # ←スプレッドシートのタブ名と一致させる
+    DATA_SHEET = "transactions"    # ←スプレッドシートのタブ名と一致させる
+
+    # 読み込み実行
+    master_df = conn.read(spreadsheet=url, worksheet=MASTER_SHEET)
+    data_df = conn.read(spreadsheet=url, worksheet=DATA_SHEET)
 
 # --- 2. 入力フォーム ---
 st.header("➕ 新規データ入力")
