@@ -14,6 +14,16 @@ except:
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 try:
+    # URLを取得
+    url = st.secrets["public_gsheets_url"]
+    
+    # シート名指定を「変数」にして分かりやすくする
+    MASTER_SHEET = "master"        # ←スプレッドシートのタブ名と一致させる
+    DATA_SHEET = "transactions"    # ←スプレッドシートのタブ名と一致させる
+
+    # 読み込み実行
+    master_df = conn.read(spreadsheet=url, worksheet=MASTER_SHEET)
+    data_df = conn.read(spreadsheet=url, worksheet=DATA_SHEET)
     # シート名（worksheet）を指定せずに、まず「本体」を読み込む
     # これで失敗する場合はURL自体の不備です
     df = conn.read(spreadsheet=url)
